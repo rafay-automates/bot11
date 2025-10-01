@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Domain Metrics Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    h1 {
+      color: #2C3E50;
+      margin-top: 30px;
+    }
+    p {
+      color: #555;
+      font-size: 18px;
+    }
+    .input-box {
+      margin: 20px;
+    }
+    input[type="text"] {
+      width: 50%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #2C3E50;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #1A252F;
+    }
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .metric-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 10px;
+      text-align: center;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      width: 200px;
+    }
+    .metric-card h2 {
+      font-size: 40px;
+      margin: 0;
+      color: #2C3E50;
+    }
+    .metric-card p {
+      font-size: 16px;
+      margin: 5px 0 0 0;
+      color: #7f8c8d;
+    }
+    .error {
+      color: red;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Free Domain Metrics Checker</h1>
+  <p>Enter any domain and see Domain Authority, Page Authority, Spam Score, and more.</p>
+
+  <div class="input-box">
+    <input type="text" id="domainInput" placeholder="example.com">
+    <button onclick="checkMetrics()">Check Metrics</button>
+  </div>
+
+  <div id="results" class="card-container"></div>
+  <div id="error" class="error"></div>
+
+  <script>
+    async function checkMetrics() {
+      const domain = document.getElementById("domainInput").value;
+      const resultsDiv = document.getElementById("results");
+      const errorDiv = document.getElementById("error");
+
+      resultsDiv.innerHTML = "";
+      errorDiv.innerText = "";
+
+      try {
+        const response = await fetch(`https://bot11-q8bt.onrender.com/check-metrics?domain=${encodeURIComponent(domain)}`);
+        const data = await response.json();
+
+        if (data.error) {
+          errorDiv.innerText = "Error: " + data.error;
+          return;
+        }
+
+        const metrics = [
+          { key: "Domain Authority", value: data["Domain Authority"] },
+          { key: "Domain Rating", value: data["Domain Rating"] },
+          { key: "Spam Score", value: data["Spam Score"] },
+          { key: "Page Authority", value: data["Page Authority"] },
+          { key: "Site Traffic", value: data["Site Traffic"] },
+        ];
+
+        metrics.forEach(metric => {
+          const card = document.createElement("div");
+          card.className = "metric-card";
+          card.innerHTML = `<h2>${metric.value}</h2><p>${metric.key}</p>`;
+          resultsDiv.appendChild(card);
+        });
+
+      } catch (err) {
+        errorDiv.innerText = "Request failed: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
